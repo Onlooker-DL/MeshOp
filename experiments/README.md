@@ -5,13 +5,13 @@ This directory contains the two experiment suites of the paper:
 - `burgers/` — space–time Burgers (1-D space + time, 5100 samples)
 - `reaction_diffusion_accu/` — accuracy-stopped 3-D steady reaction–diffusion (up to 3100 samples)
 
-Each suite follows the same three-stage pipeline:
+Each suite follows the same two-stage pipeline:
 
 1. **Operator training** (Python) — `operator/`
 2. **FEM evaluation** (MATLAB) — `fem/`
 
-This README documents step 2. For the full pipeline (including data download) and FEM
-evaluation, see the repository root `README.md`.
+This README documents step 1 (operator training). For the full pipeline
+(including data download) and FEM evaluation, see the repository root `README.md`.
 
 ## Layout
 
@@ -33,8 +33,8 @@ experiments/
 
 - Python 3.12 with PyTorch (CUDA build), `numpy`, `scipy`, `h5py`,
   `matplotlib`, `pyyaml`.
-- MATLAB with the **Parallel Computing Toolbox**.
-- The data files referenced by the operator configs, e.g.:
+- MATLAB (a recent release).
+- The data files referenced by the operator configs (download from the GitHub Release; see `data/README.md`).
 
 
 
@@ -50,11 +50,11 @@ python experiments/<problem>/operator/run_operator.py \
 ```
 
 Recommended launch pattern (background, detached, logged). Replace
-`/path/to/Learning-Mesh-Operators-for-Adaptive-PDE-Solvers` with your repository location and `python`
+`/path/to/MeshOp-Learning-Mesh-Refinement-Operators-for-Adaptive-PDE-Solvers` with your repository location and `python`
 with your environment's interpreter:
 
 ```bash
-cd /path/to/Learning-Mesh-Operators-for-Adaptive-PDE-Solvers
+cd /path/to/MeshOp-Learning-Mesh-Refinement-Operators-for-Adaptive-PDE-Solvers
 
 mkdir -p .runtime/tmp logs
 export TMPDIR="$PWD/.runtime/tmp"
@@ -83,11 +83,13 @@ Notes:
   console output goes to the log file under `logs/`.
 - The GPU is selected with `CUDA_VISIBLE_DEVICES`; the YAML field
   `training.device: cuda:0` refers to the first *visible* GPU.
+- To run both example commands at the same time on different GPUs, set a
+  different `CUDA_VISIBLE_DEVICES` value for each job (e.g. `2` and `3`).
 - When you inline the environment variables instead of using `export`, keep a
   space before the line-continuation backslash:
   `CUDA_VISIBLE_DEVICES=1 \` (a missing space, `CUDA_VISIBLE_DEVICES=1\`,
   makes the shell treat `nohup` as part of the variable value).
-- The example commands above are the ones used for the paper runs.
+- The two commands above are minimal examples; the shipped pretrained exports under `result/operators/` correspond to the b3000 variants.
 
 ## Configurations
 
@@ -122,17 +124,16 @@ config. "Output experiment" is the sub-directory created under
 | `deeponet_b3000.yaml` | DeepONet | 3000 | `rd_accu_b3000_mse` |
 | `pod_deeponet_b3000.yaml` | POD-DeepONet | 3000 | `rd_accu_b3000_mse` |
 
-> Several configs share one output directory (e.g. `b2000_mse` for the
-> DeepONet/POD-DeepONet variants). Re-running one overwrites the
-> `predictions.mat` of the other, so check the `experiment:` field before
-> launching.
+> Output folders are `result/operators/<problem>/<model>/<experiment>/`, so
+> different models never overwrite each other. Re-running the same config
+> does overwrite its own `predictions.mat`; back it up if needed.
 
 ## Outputs
 
 Each run writes to `result/operators/<problem>/<model>/<experiment>/`:
 
 - `predictions.mat` — canonical test-set score predictions consumed by the FEM stage
-- `final_<model>_score_model.pt` and `last_<model>_score_model.pt` — trained weights
+- `final_<model>_score_model.pt` / `last_<model>_score_model.pt` (FNO), or `final_model.pt` (CNO/DeepONet/POD-DeepONet) — trained weights
 - `resolved_config.json`, `run_config.json` — exact configuration used
 - `final_metrics.json`, `training_history.csv`, `per_sample_test_metrics.csv`,
   `periodic_test_metrics.csv`
