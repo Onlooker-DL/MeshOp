@@ -1,0 +1,36 @@
+problem: burgers
+experiment: b3000_mse
+seed: 42
+deterministic: false
+data:
+  path: data/burgers/burgers_5100.mat
+  total_samples: 5100
+  train_samples: 3000
+  test_samples: 100
+  split_mode: prefix_train_tail_test
+model:
+  name: fno
+  nx_input: 256
+  width: 9
+  modes_x: 6
+  modes_t: 6
+  layers: 4
+  projection_width: 96
+  padding_t: 9
+  dropout: 0.03
+training:
+  loss: mse
+  epochs: 1000
+  batch_size: 16
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  device: cuda:0
+  bf16_amp: false
+  save_every: 10
+  test_every: 50
+score:
+  maximum: 12
+  generation_threshold: 0.50

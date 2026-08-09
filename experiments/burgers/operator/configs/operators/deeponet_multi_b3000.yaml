@@ -1,0 +1,38 @@
+problem: burgers
+experiment: b3000_mse
+seed: 42
+deterministic: false
+data:
+  path: data/burgers/burgers_5100.mat
+  total_samples: 5100
+  train_samples: 3000
+  test_samples: 100
+  split_mode: prefix_train_tail_test
+model:
+  name: deeponet_multi
+  # One branch network per input function (u0 and f each 256 sensors).
+  # Parameter count is close to the single-branch DeepONet (~25.7k).
+  latent_dim: 64
+  hidden_dim: 28
+  branch_depth: 4
+  trunk_depth: 4
+  branch_split: 256
+  activation: gelu
+  dropout: 0.0
+training:
+  loss: mse
+  epochs: 10000
+  batch_size: 16
+  num_workers: 4
+  train_query_points: 4096
+  query_batch_size: 10201
+  inference_sample_batch_size: 8
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  log_every: 10
+  device: cuda:0
+score:
+  maximum: 12
+  generation_threshold: 0.50

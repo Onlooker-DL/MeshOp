@@ -1,0 +1,101 @@
+{
+  "code_version": "FNO2D_BURGERS_V1",
+  "arguments": {
+    "data": "data/burgers/burgers_5100.mat",
+    "out_dir": "result/operators/burgers/fno/b3000_mse",
+    "fig_dir": "figures/operators/burgers/fno/b3000_mse",
+    "split_file": "result/splits/burgers_5100data_first3000train_last100test.npz",
+    "seed": 42,
+    "deterministic": false,
+    "train_samples": 3000,
+    "test_samples": 100,
+    "nx_input": 256,
+    "epochs": 1000,
+    "batch_size": 16,
+    "num_workers": 4,
+    "learning_rate": 0.001,
+    "eta_min": 1e-05,
+    "weight_decay": 1e-06,
+    "grad_clip": 1.0,
+    "width": 9,
+    "modes_x": 6,
+    "modes_t": 6,
+    "layers": 4,
+    "projection_width": 96,
+    "padding_t": 9,
+    "dropout": 0.03,
+    "max_score": 12,
+    "generation_threshold": 0.5,
+    "under_weight": 1.0,
+    "score_balance_power": 0.0,
+    "bound_penalty": 0.0,
+    "device": "cuda:0",
+    "bf16_amp": 0,
+    "save_every": 10,
+    "test_every": 50,
+    "save_examples": 5,
+    "timing_repeats": 3,
+    "resume": false,
+    "evaluate_only": false
+  },
+  "model_config": {
+    "in_channels": 4,
+    "width": 9,
+    "modes_x": 6,
+    "modes_t": 6,
+    "layers": 4,
+    "projection_width": 96,
+    "padding_t": 9,
+    "dropout": 0.03
+  },
+  "split": {
+    "training_samples": 3000,
+    "held_out_test_samples": 100
+  },
+  "normalization": {
+    "u_mean": 4.671853287801532e-12,
+    "u_std": 0.812238003970013
+  },
+  "score_histogram": [
+    12719730,
+    6074421,
+    3889089,
+    3316974,
+    1938543,
+    1148845,
+    573119,
+    395109,
+    232290,
+    215298,
+    90708,
+    8863,
+    11
+  ],
+  "score_weights": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "generation_rule": {
+    "threshold": 0.5,
+    "minimum_generation": 0,
+    "maximum_generation": 12,
+    "used_in_training_loss": false
+  },
+  "checkpoint_selection": "fixed final epoch; test monitored periodically but not used for model selection",
+  "test_monitoring": {
+    "test_every_epochs": 50,
+    "used_for_early_stopping": false,
+    "used_for_checkpoint_selection": false
+  }
+}

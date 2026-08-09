@@ -1,0 +1,42 @@
+{
+  "problem": "burgers",
+  "experiment": "b3000_mse",
+  "seed": 42,
+  "deterministic": false,
+  "data": {
+    "path": "data/burgers/burgers_5100.mat",
+    "total_samples": 5100,
+    "train_samples": 3000,
+    "test_samples": 100,
+    "split_mode": "prefix_train_tail_test"
+  },
+  "model": {
+    "name": "pod_deeponet",
+    "hidden_dim": 56,
+    "depth": 4,
+    "activation": "gelu",
+    "dropout": 0.0
+  },
+  "pod": {
+    "energy": 0.99,
+    "maximum_rank": 196,
+    "oversampling": 16,
+    "sample_chunk": 32
+  },
+  "training": {
+    "loss": "mse",
+    "epochs": 1000,
+    "batch_size": 8,
+    "num_workers": 4,
+    "learning_rate": 0.001,
+    "eta_min": 1e-05,
+    "weight_decay": 1e-06,
+    "grad_clip": 1.0,
+    "log_every": 10,
+    "device": "cuda:0"
+  },
+  "score": {
+    "maximum": 12,
+    "generation_threshold": 0.5
+  }
+}

@@ -1,0 +1,35 @@
+problem: burgers
+experiment: b2000_mse
+seed: 42
+deterministic: false
+data:
+  path: data/burgers/burgers_5100.mat
+  total_samples: 5100
+  train_samples: 2000
+  test_samples: 100
+  split_mode: prefix_train_tail_test
+model:
+  name: pod_deeponet
+  hidden_dim: 56
+  depth: 4
+  activation: gelu
+  dropout: 0.0
+pod:
+  energy: 0.99
+  maximum_rank: 196
+  oversampling: 16
+  sample_chunk: 32
+training:
+  loss: mse
+  epochs: 10000
+  batch_size: 8
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  log_every: 10
+  device: cuda:0
+score:
+  maximum: 12
+  generation_threshold: 0.50

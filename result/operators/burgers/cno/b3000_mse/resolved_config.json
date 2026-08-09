@@ -1,0 +1,43 @@
+{
+  "problem": "burgers",
+  "experiment": "b3000_mse",
+  "seed": 42,
+  "deterministic": false,
+  "data": {
+    "path": "data/burgers/burgers_5100.mat",
+    "total_samples": 5100,
+    "train_samples": 3000,
+    "test_samples": 100,
+    "split_mode": "prefix_train_tail_test"
+  },
+  "model": {
+    "name": "cno",
+    "in_channels": 4,
+    "out_channels": 1,
+    "width": 10,
+    "levels": 2,
+    "n_res_bottleneck": 2,
+    "n_res_intermediate": 2,
+    "kernel_size": 3,
+    "activation": "gelu",
+    "dropout": 0.0
+  },
+  "training": {
+    "loss": "mse",
+    "epochs": 1000,
+    "batch_size": 16,
+    "num_workers": 4,
+    "learning_rate": 0.001,
+    "eta_min": 1e-05,
+    "weight_decay": 1e-06,
+    "grad_clip": 1.0,
+    "device": "cuda:0",
+    "bf16_amp": false,
+    "log_every": 10,
+    "inference_sample_batch_size": 2
+  },
+  "score": {
+    "maximum": 12,
+    "generation_threshold": 0.5
+  }
+}

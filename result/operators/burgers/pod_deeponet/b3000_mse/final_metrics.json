@@ -1,0 +1,47 @@
+{
+  "problem": "burgers",
+  "model": "pod_deeponet",
+  "loss": "mse",
+  "split": {
+    "training_samples": 3000,
+    "held_out_test_samples": 100
+  },
+  "checkpoint_selection": "fixed final epoch",
+  "training_time_sec": 1626.658169567585,
+  "test_mse": 0.6685706401449854,
+  "test_metrics": {
+    "mae": 0.5288438663260426,
+    "rmse": 0.8176616905205877,
+    "rounded_accuracy": 0.6234045681795902,
+    "within_0p5": 0.6234045681795902,
+    "within_1": 0.8381893931967455,
+    "under_refinement_rate": 0.16223115380845016,
+    "over_refinement_rate": 0.21436427801195962,
+    "ceil_level_mae": 0.4747926673855504
+  },
+  "generation_rule": {
+    "threshold": 0.5,
+    "minimum_generation": 0,
+    "maximum_generation": 12,
+    "used_in_training_loss": false
+  },
+  "per_sample_relative_l2": {
+    "mean": 0.3401429468907257,
+    "median": 0.3302442612344708,
+    "worst": 0.6165199063539647
+  },
+  "mean_per_sample_relative_l2": 0.3401429468907257,
+  "median_per_sample_relative_l2": 0.3302442612344708,
+  "timing": {
+    "test_inference_time_sec": 0.027452319860458374,
+    "total_test_inference_time_sec": 0.027452319860458374,
+    "mean_inference_time_sec_per_sample": 0.0002745231986045837,
+    "throughput_samples_per_sec": 3642.67939861933,
+    "timed_samples": 100
+  },
+  "trainable_parameters": 46284,
+  "device": "cuda:0",
+  "precision": "float32",
+  "pod_rank": 196,
+  "pod_captured_energy": 0.9095051634566439
+}

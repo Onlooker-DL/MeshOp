@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# MATLAB
+*.asv
+
+# Large binary data sets (keep data/*/README.md instead of the .mat files)
+*.mat
+*.npz
+
+# Model checkpoints / inference artifacts
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.log
+nohup.out
+
+# Runtime and output directories (keep the directory placeholders)
+.runtime/
+result/*
+!result/.gitkeep
+!result/README.md
+# Selected operator exports are shipped with the release: predictions.mat,
+# metrics/configs (.json/.csv), final checkpoints (final_*.pt), and the
+# deterministic split_indices.npz. Everything else under result/ is
+# regenerable and stays ignored.
+!result/operators/
+!result/operators/**/
+!result/operators/**/predictions.mat
+!result/operators/**/*.json
+!result/operators/**/*.csv
+!result/operators/**/final_*.pt
+!result/operators/**/split_indices.npz
+figures/*
+!figures/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

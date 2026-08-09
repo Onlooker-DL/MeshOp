@@ -1,0 +1,40 @@
+problem: burgers
+experiment: b1000_mse
+seed: 42
+deterministic: false
+data:
+  path: data/burgers/burgers_5100.mat
+  total_samples: 5100
+  train_samples: 1000
+  test_samples: 100
+  split_mode: prefix_train_tail_test
+model:
+  name: cno
+  in_channels: 4
+  out_channels: 1
+  # Target scale is approximately 50k trainable parameters (~52.9k).
+  # The training script prints the exact count; adjust n_res_bottleneck /
+  # n_res_intermediate to tune it.
+  width: 10
+  levels: 2
+  n_res_bottleneck: 2
+  n_res_intermediate: 2
+  kernel_size: 3
+  activation: gelu
+  dropout: 0.0
+training:
+  loss: mse
+  epochs: 1000
+  batch_size: 16
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  device: cuda:0
+  bf16_amp: false
+  log_every: 10
+  inference_sample_batch_size: 2
+score:
+  maximum: 12
+  generation_threshold: 0.50

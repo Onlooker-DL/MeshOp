@@ -1,0 +1,39 @@
+{
+  "code_version": "FNO3D_REACTION_DIFFUSION_V1",
+  "method": "FNO3d continuous refinement-score regression",
+  "operator": "g_D(x,y) -> score(x,y,z)",
+  "coordinate_mapping": "uniform s with physical z=s^2",
+  "training_samples": 3000,
+  "test_samples": 100,
+  "training_time_sec": 68261.38257567585,
+  "final_training_loss": 0.1077977617730697,
+  "final_training_metrics": {
+    "mae": 0.16341297714686695,
+    "rmse": 0.32807191084562154,
+    "rounded_accuracy": 0.8796411652253072,
+    "within_1": 0.9776656422394174,
+    "under_refinement_rate": 0.07610202518585951,
+    "over_refinement_rate": 0.044256809588833254
+  },
+  "test_loss": 0.1335148872435093,
+  "test_metrics": {
+    "mae": 0.18068375995675923,
+    "rmse": 0.3651407316328323,
+    "rounded_accuracy": 0.8607608921256259,
+    "within_1": 0.9680399089667728,
+    "under_refinement_rate": 0.09311417387346381,
+    "over_refinement_rate": 0.046124934000910334
+  },
+  "mean_per_sample_relative_l2": 0.09940532594919205,
+  "median_per_sample_relative_l2": 0.09578816592693329,
+  "timing": {
+    "total_test_inference_time_sec": 0.9770089909434319,
+    "mean_inference_time_sec_per_sample": 0.009770089909434319,
+    "throughput_samples_per_sec": 102.35320342695795,
+    "timing_repeats": 3
+  },
+  "trainable_parameters": 243504,
+  "parameter_storage_mib": 1.85205078125,
+  "best_sample_matlab": 3096,
+  "worst_sample_matlab": 3051
+}

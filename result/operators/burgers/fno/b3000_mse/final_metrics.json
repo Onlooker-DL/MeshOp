@@ -1,0 +1,57 @@
+{
+  "code_version": "FNO2D_BURGERS_V1",
+  "method": "FNO2d continuous refinement-score regression",
+  "split": {
+    "training_samples": 3000,
+    "held_out_test_samples": 100
+  },
+  "checkpoint_selection": "fixed final epoch; test monitored periodically but not used for model selection",
+  "training_time_sec": 3277.8282365724444,
+  "final_training_set_loss": 0.2442823640505473,
+  "final_training_set_metrics": {
+    "mae": 0.3298091796938821,
+    "rmse": 0.49419741443540016,
+    "rounded_accuracy": 0.730824853772506,
+    "within_0p5": 0.7308245923602261,
+    "within_1": 0.9379514753455543,
+    "under_refinement_rate": 0.1525185112570663,
+    "over_refinement_rate": 0.11665663497042773,
+    "ceil_level_mae": 0.27917138842597133
+  },
+  "test_loss": 0.2679754030704498,
+  "test_metrics": {
+    "mae": 0.33568195386022204,
+    "rmse": 0.517606208780645,
+    "rounded_accuracy": 0.7255965101460641,
+    "within_0p5": 0.7255965101460641,
+    "within_1": 0.9271953730026468,
+    "under_refinement_rate": 0.14724242721301833,
+    "over_refinement_rate": 0.12716106264091756,
+    "ceil_level_mae": 0.2898323693755514
+  },
+  "generation_rule": {
+    "threshold": 0.5,
+    "minimum_generation": 0,
+    "maximum_generation": 12,
+    "used_in_training_loss": false
+  },
+  "per_sample_relative_l2": {
+    "mean": 0.21674280539155005,
+    "median": 0.2165842354297638,
+    "worst": 0.2600395083427429
+  },
+  "timing": {
+    "total_test_inference_time_sec": 0.04462896287441254,
+    "mean_inference_time_sec_per_sample": 0.0004462896287441254,
+    "throughput_samples_per_sec": 2240.69737585889,
+    "timing_repeats": 3,
+    "timed_samples": 100
+  },
+  "trainable_parameters": 24862,
+  "device": "cuda:0",
+  "precision": "float32",
+  "best_mae_sample_matlab": 5028,
+  "worst_mae_sample_matlab": 5030,
+  "best_mae_source_attempt_id": 5028,
+  "worst_mae_source_attempt_id": 5030
+}
