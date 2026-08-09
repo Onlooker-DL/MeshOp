@@ -142,16 +142,8 @@ Each entry point resolves the trained `predictions.mat` and the data set
 automatically from `result/operators/...` and `data/...`, and writes:
 
 - `result/fem/<problem>/...` — numerical results (errors, DOFs, timings)
-- `figures/fem/<problem>/...` — mesh and convergence figures
+- `figures/fem/<problem>/...` — mesh and convergence figures.
 
-## Tests
-
-```bash
-python -m unittest discover -s tests
-```
-
-The unit tests verify that all operator configurations use consistent,
-non-overlapping train/test splits.
 
 ## Reproducibility notes
 
