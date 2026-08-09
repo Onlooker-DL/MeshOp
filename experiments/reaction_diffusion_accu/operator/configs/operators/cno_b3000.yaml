@@ -1,5 +1,5 @@
 problem: reaction_diffusion
-experiment: rd3000_mse
+experiment: rd_accu_b3000_mse
 seed: 42
 deterministic: false
 data:

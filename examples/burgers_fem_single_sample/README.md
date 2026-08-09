@@ -8,9 +8,8 @@ the space-time Burgers problem on each, and saves mesh/error outputs.
 It requires a trained operator export (`predictions.mat`). The example
 defaults to `result/operators/burgers/fno/b3000_mse/predictions.mat`: either
 train the operator first (full configs under
-`experiments/burgers/operator/configs/operators/`, or the tiny
-`examples/burgers_single_sample` Python example), or use a released pretrained
-export.
+`experiments/burgers/operator/configs/operators/`), or use a released
+pretrained export.
 
 ## Files
 
@@ -22,8 +21,8 @@ export.
 ## Requirements
 
 - MATLAB (a recent release); no extra toolboxes are needed for this example.
-- `data/burgers/burgers_5100.mat` (generate with
-  `experiments/burgers/data_gen/generate_data.m`).
+- `data/burgers/burgers_5100.mat` (download from the GitHub Release; see
+  `data/README.md`).
 - `result/operators/burgers/fno/b3000_mse/predictions.mat`.
 
 ## Run

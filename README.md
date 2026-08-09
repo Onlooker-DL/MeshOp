@@ -51,6 +51,7 @@ result/                         Selected trained exports and numerical results
 figures/                        Generated figures and mesh visualizations
 logs/                           Training and experiment logs
 tools/                          Auxiliary utilities and helper scripts
+```
 
 ## Requirements
 

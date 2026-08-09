@@ -4,7 +4,7 @@ Completed in the delivery environment:
 
 - parsed every Python source file with the standard Python AST parser;
 - compiled every Python source file with `compileall`;
-- parsed and checked all eight YAML experiment configurations;
+- parsed and checked all sixteen YAML experiment configurations;
 - checked that every top-level MATLAB function name matches its filename;
 - checked that both FEM runners invoke the same PDE-specific FEM program with
   zero correction cycles for base and the configured number for hybrid;
