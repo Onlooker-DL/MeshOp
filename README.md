@@ -142,16 +142,8 @@ Each entry point resolves the trained `predictions.mat` and the data set
 automatically from `result/operators/...` and `data/...`, and writes:
 
 - `result/fem/<problem>/...` — numerical results (errors, DOFs, timings)
-- `figures/fem/<problem>/...` — mesh and convergence figures
+- `figures/fem/<problem>/...` — mesh and convergence figures.
 
-## Tests
-
-```bash
-python -m unittest discover -s tests
-```
-
-The unit tests verify that all operator configurations use consistent,
-non-overlapping train/test splits.
 
 ## Reproducibility notes
 
@@ -161,7 +153,7 @@ non-overlapping train/test splits.
 - Paper experiments ran on two Intel Xeon Gold 6240 CPUs, 187 GiB RAM, and one
   NVIDIA RTX A6000 (48 GB). Neural operators were trained on the GPU; mesh
   construction and finite-element solves ran on the CPU in MATLAB.
-- Set `deterministic: true` in a YAML config to enable deterministic PyTorch
+- Set `deterministic: optional` in a YAML config to enable deterministic PyTorch
   algorithms (slower, but bit-reproducible on the same hardware).
 
 ## License
