@@ -97,7 +97,7 @@ Supported models: `fno`, `cno`, `deeponet`, `deeponet_multi` (multi-branch
 DeepONet), `pod_deeponet`. The tables below list every shipped
 config. "Output experiment" is the sub-directory created under
 `result/operators/<problem>/<model>/`.
- FNO parameter counts are reported in complex degrees of freedom; for real-valued storage, multiply by two for related real-value.
+FNO parameter counts are reported in complex-valued parameters; each complex parameter corresponds to two real-valued scalars.
 
 ### Burgers (`data/burgers/burgers_5100.mat`, 5100 samples)
 
