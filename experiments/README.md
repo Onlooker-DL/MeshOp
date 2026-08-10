@@ -50,7 +50,7 @@ python experiments/<problem>/operator/run_operator.py \
 ```
 
 Recommended launch pattern (background, detached, logged). Replace
-`/path/to/MeshOp-Learning-Mesh-Refinement-Operators-for-Adaptive-PDE-Solvers` with your repository location and `python`
+`/path/to/MeshOp` with your repository location and `python`
 with your environment's interpreter:
 
 ```bash
