@@ -152,8 +152,7 @@ automatically from `result/operators/...` and `data/...`, and writes:
 - Paper experiments ran on two Intel Xeon Gold 6240 CPUs, 187 GiB RAM, and one
   NVIDIA RTX A6000 (48 GB). Neural operators were trained on the GPU; mesh
   construction and finite-element solves ran on the CPU in MATLAB.
-- Set `deterministic: optional` in a YAML config to enable deterministic PyTorch
-  algorithms (slower, but bit-reproducible on the same hardware).
+- Set `deterministic: optional` in a YAML config.
 
 ## License
 
