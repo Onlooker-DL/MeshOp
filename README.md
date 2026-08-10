@@ -122,8 +122,7 @@ Outputs are written to
 - checkpoints and training logs (see `logs/`)
 
 Full training instructions and the list of all configurations are in
-`experiments/README.md`. Minimal end-to-end examples are in `examples/`.
-Selected trained operator exports are included under `result/operators/` so the
+`experiments/README.md`. Selected trained operator exports are included under `result/operators/` so the
 FEM stage can be reproduced without re-training — see `result/README.md`.
 
 ### 3. FEM evaluation (MATLAB)
