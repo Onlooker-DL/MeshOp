@@ -54,7 +54,7 @@ Recommended launch pattern (background, detached, logged). Replace
 with your environment's interpreter:
 
 ```bash
-cd /path/to/MeshOp-Learning-Mesh-Refinement-Operators-for-Adaptive-PDE-Solvers
+cd /path/to/MeshOp
 
 mkdir -p .runtime/tmp logs
 export TMPDIR="$PWD/.runtime/tmp"
