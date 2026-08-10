@@ -65,7 +65,7 @@ tools/                          Auxiliary utilities and helper scripts
 - Python 3.12
 - PyTorch with a CUDA build (experiments in the paper used one NVIDIA RTX A6000,
   48 GB)
-- `numpy`, `scipy`, `h5py`, `matplotlib`, `pyyaml`
+- `numpy`,`scipy`, `h5py`, `matplotlib`, `pyyaml`
 
 Example:
 
