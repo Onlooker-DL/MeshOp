@@ -117,8 +117,8 @@ function plotmeshb_one_sample( ...
         'Faces', M.elem, ...
         'Vertices', M.node, ...
         'FaceColor', 'w', ...
-        'EdgeColor', [0.35 0.35 0.35], ...
-        'LineWidth', 0.30);
+        'EdgeColor', [0.4 0.4 0.4], ...
+        'LineWidth', 0.25);
 
     axis(ax, 'equal');
     axis(ax, 'tight');
@@ -143,9 +143,9 @@ function plotmeshb_one_sample( ...
 
     outPng = strrep(outPdf, '.pdf', '.png');
     try
-        print(fig, outPng, '-dpng', '-r300');
+        print(fig, outPng, '-dpng', '-r150');
     catch
-        exportgraphics(fig, outPng, 'Resolution', 300);
+        exportgraphics(fig, outPng, 'Resolution', 150);
     end
 
     close(fig);
@@ -236,5 +236,5 @@ function plotmeshb_export(fig, outPdf)
     set(fig, 'PaperUnits', 'points', ...
         'PaperSize', [800, 400], ...
         'PaperPosition', [0, 0, 800, 400]);
-    print(fig, outPdf, '-dpdf', '-painters');
+    exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
 end

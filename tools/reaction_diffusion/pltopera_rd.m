@@ -158,7 +158,7 @@ function pltopera_rd_export(fig, outPdf)
     set(fig, 'PaperUnits', 'points', ...
         'PaperSize', [514, 409], ...
         'PaperPosition', [0, 0, 514, 409]);
-    print(fig, outPdf, '-dpdf', '-painters');
+    exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
 end
 
 function label = pltopera_rd_label(operatorName)

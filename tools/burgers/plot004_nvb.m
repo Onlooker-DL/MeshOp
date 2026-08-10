@@ -205,8 +205,8 @@ function plot004_nvb_one(figDir, base, node, elem, gen, maxGen, roundNo)
         'Position', [1, 1, 800, 400], 'Visible', 'on');
     ax = axes(fig, 'Position', [0.06, 0.06, 0.88, 0.88]);
     patch(ax, 'Faces', elem, 'Vertices', node, ...
-        'FaceColor', 'w', 'EdgeColor', [0.25 0.25 0.25], ...
-        'LineWidth', 0.3);
+        'FaceColor', 'w', 'EdgeColor', [0.4 0.4 0.4], ...
+        'LineWidth', 0.25);
     axis(ax, 'equal');
     axis(ax, 'tight');
     box(ax, 'on');
@@ -222,7 +222,7 @@ function plot004_nvb_export(fig, outPdf, outPng)
     set(fig, 'PaperUnits', 'points', ...
         'PaperSize', [800, 400], ...
         'PaperPosition', [0, 0, 800, 400]);
-    print(fig, outPdf, '-dpdf', '-painters');
+    exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
     try
         print(fig, outPng, '-dpng', '-r300');
     catch

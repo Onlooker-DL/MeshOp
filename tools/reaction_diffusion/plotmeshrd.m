@@ -211,12 +211,12 @@ function plotmeshrd_panel(figDir, sp, node2, tri2, methodLabel, outPdf)
     if strcmpi(sp.tag, 'z0')
         % Dense bottom-face mesh:
         % thinner/lighter than original, but still visible after LaTeX scaling.
-        edgeColor = [0.45 0.45 0.45];
-        lineWidth = 0.22;
+        edgeColor = [0.4 0.4 0.4];
+        lineWidth = 0.25;
     else
         % Interior slice is less dense.
-        edgeColor = [0.35 0.35 0.35];
-        lineWidth = 0.28;
+        edgeColor = [0.4 0.4 0.4];
+        lineWidth = 0.25;
     end
 
     patch(ax, ...
@@ -248,9 +248,9 @@ function plotmeshrd_panel(figDir, sp, node2, tri2, methodLabel, outPdf)
 
     outPng = strrep(outPdf, '.pdf', '.png');
     try
-        print(fig, outPng, '-dpng', '-r300');
+        print(fig, outPng, '-dpng', '-r150');
     catch
-        exportgraphics(fig, outPng, 'Resolution', 300);
+        exportgraphics(fig, outPng, 'Resolution', 150);
     end
 
     close(fig);
@@ -462,7 +462,7 @@ function plotmeshrd_export(fig, outPdf)
         'PaperSize', [800, 400], ...
         'PaperPosition', [0, 0, 800, 400]);
 
-    print(fig, outPdf, '-dpdf', '-painters');
+    exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
 end
 
 

@@ -69,7 +69,7 @@ function plotquery_rd_export(fig, outPdf, outPng)
     set(fig, 'PaperUnits', 'points', ...
         'PaperSize', [514, 409], ...
         'PaperPosition', [0, 0, 514, 409]);
-    print(fig, outPdf, '-dpdf', '-painters');
+    exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
     try
         print(fig, outPng, '-dpng', '-r300');
     catch
