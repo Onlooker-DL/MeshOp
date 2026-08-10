@@ -1,8 +1,8 @@
-# MeshOp: Learning Mesh Refinement Operators for Adaptive PDE Solvers
+# MeshOp: Operator Learning for Adaptive Mesh Refinement in Parametric PDEs
 
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 
-Official implementation of *MeshOp: Learning Mesh Refinement Operators for Adaptive PDE Solvers*.
+Official implementation of *MeshOp: Operator Learning for Adaptive Mesh Refinement in Parametric PDEs*.
 
 This project learns a neural operator that maps the functional inputs of a PDE
 instance (initial condition, forcing term, boundary data, physical parameters)
