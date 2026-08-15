@@ -222,7 +222,7 @@ function plot004_nvb_export(fig, outPdf, outPng)
     set(fig, 'PaperUnits', 'points', ...
         'PaperSize', [800, 400], ...
         'PaperPosition', [0, 0, 800, 400]);
-    exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
+    print(fig, outPdf, '-dpdf', '-painters');
     try
         print(fig, outPng, '-dpng', '-r300');
     catch

@@ -39,6 +39,9 @@ experiments/
   reaction_diffusion_accu/      Accuracy-controlled 3-D reaction-diffusion experiments
     operator/                   Python operator training/inference + configs
     fem/                        MATLAB FEM evaluation entry points
+  cd_disk/                      Steady convection-diffusion on the unit disk
+    operator/                   Python operator training/inference + configs
+    fem/                        MATLAB FEM evaluation entry points
 
 src/
   data/                         Data loading helpers
@@ -91,12 +94,14 @@ setup;            % or: setup(false) to keep the current path
 ### 1. Data
 
 The data sets are provided as GitHub Release assets (they are too large to store
-in the repository itself). Download `burgers_5100.mat` and
-`reaction_diffusion_accu_3100.mat` from the latest Release and place them as:
+in the repository itself). Download `burgers_5100.mat`,
+`reaction_diffusion_accu_3100.mat`, and `cd_disk_3100.mat` from the latest
+Release and place them as:
 
 ```
 data/burgers/burgers_5100.mat
 data/reaction_diffusion_accu/reaction_diffusion_accu_3100.mat
+data/cd_disk/cd_disk_3100.mat
 ```
 
 See `data/README.md` for detailed instructions.
@@ -112,6 +117,9 @@ python experiments/burgers/operator/run_operator.py \
 
 python experiments/reaction_diffusion_accu/operator/run_operator.py \
   --config experiments/reaction_diffusion_accu/operator/configs/operators/fno_b3000.yaml
+
+python experiments/cd_disk/operator/run_operator.py \
+  --config experiments/cd_disk/operator/configs/operators/fno_b3000.yaml
 ```
 
 Outputs are written to
@@ -136,6 +144,7 @@ point from MATLAB:
 ```matlab
 run_burgers_fem
 run_reaction_diffusion_accu_fem
+run_cd_disk_fem
 ```
 
 Each entry point resolves the trained `predictions.mat` and the data set

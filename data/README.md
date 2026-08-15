@@ -14,6 +14,7 @@ GitHub Release.
 4. Under **Assets**, download:
    - `burgers_5100.mat`
    - `reaction_diffusion_accu_3100.mat`
+   - `cd_disk_3100.mat`
 5. Create the following directories in the repository and place the downloaded
    files in the corresponding locations:
 
@@ -21,5 +22,7 @@ GitHub Release.
 data/
 ├── burgers/
 │   └── burgers_5100.mat
-└── reaction_diffusion_accu/
-    └── reaction_diffusion_accu_3100.mat
+├── reaction_diffusion_accu/
+│   └── reaction_diffusion_accu_3100.mat
+└── cd_disk/
+    └── cd_disk_3100.mat

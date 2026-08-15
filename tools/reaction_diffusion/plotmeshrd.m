@@ -7,21 +7,21 @@ function plotmeshrd(operatorName, operatorExperiment, testIds)
 %
 % The 3-D tetrahedral meshes saved by run_reaction_diffusion_accu_fem are
 % sliced at z = 0 (x-y plane) and y = 0.5 (x-z plane); each slice is drawn
-% as a 2-D triangular mesh. Enabled methods (fno / target / standard) are
-% taken from the saved visualization data.
+% as a 2-D triangular mesh. Only the FNO and target methods are drawn, and
+% the panels show the mesh without axes or numbers.
 %
 % Output:
-%   figures/pltfig/reaction_diffusion/femmesh/<op>_<exp>/test<k>_id<id>/
-%       reaction_diffusion_<op>_<exp>_test<k>_id<id>_<z0|y05>_<method>_mesh.pdf/.png
+%   figures/process/ReactionDiffusion/
+%       reaction_diffusion_<op>_<exp>_test<k>_id<id>_<z0|y05>_<fno|target>_mesh.pdf/.png
 
     if nargin < 1 || isempty(operatorName)
-        operatorName = 'cno';
+        operatorName = 'fno';
     end
     if nargin < 2 || isempty(operatorExperiment)
         operatorExperiment = 'rd_accu_b3000_mse';
     end
     if nargin < 3 || isempty(testIds)
-        testIds = 65;
+        testIds = 12;
     end
 
     root = fileparts(fileparts(fileparts(mfilename('fullpath'))));
@@ -92,10 +92,8 @@ function plotmeshrd(operatorName, operatorExperiment, testIds)
 
             datasetIndex = double(Gc.meta.datasetIndex(1));
 
-            figDir = fullfile(root, 'figures', 'pltfig', ...
-                'reaction_diffusion', 'femmesh', ...
-                sprintf('%s_%s', operatorName, operatorExperiment), ...
-                sprintf('test%03d_id%d', k, datasetIndex));
+            figDir = fullfile(root, 'figures', 'process', ...
+                'ReactionDiffusion');
 
             if exist(figDir, 'dir') ~= 7
                 mkdir(figDir);
@@ -204,9 +202,9 @@ function plotmeshrd_panel(figDir, sp, node2, tri2, methodLabel, outPdf)
     %#ok<INUSD>
 
     fig = figure('Color', 'w', 'Units', 'points', ...
-        'Position', [1, 1, 800, 400], 'Visible', 'on');
+        'Position', [1, 1, 514, 409], 'Visible', 'on');
 
-    ax = axes(fig, 'Position', [0.06, 0.06, 0.88, 0.88]);
+    ax = axes(fig, 'Position', [0.07, 0.07, 0.86, 0.86]);
 
     if strcmpi(sp.tag, 'z0')
         % Dense bottom-face mesh:
@@ -226,23 +224,12 @@ function plotmeshrd_panel(figDir, sp, node2, tri2, methodLabel, outPdf)
         'EdgeColor', edgeColor, ...
         'LineWidth', lineWidth);
 
-    % Keep the stretched appearance.
+    % Keep the stretched appearance, but no axes/ticks/numbers.
     axis(ax, 'tight');
-    box(ax, 'on');
-
-    if sp.dim == 3
-        xlabel(ax, 'x');
-        ylabel(ax, 'y');
-    else
-        xlabel(ax, 'x');
-        ylabel(ax, 'z');
+    axis(ax, 'off');
+    if isprop(ax, 'Toolbar') && ~isempty(ax.Toolbar)
+        ax.Toolbar.Visible = 'off';
     end
-
-    set(ax, ...
-        'FontSize', 11, ...
-        'LineWidth', 0.75, ...
-        'TickDir', 'out', ...
-        'Layer', 'top');
 
     plotmeshrd_export(fig, outPdf);
 
@@ -459,8 +446,8 @@ function plotmeshrd_export(fig, outPdf)
 
     set(fig, ...
         'PaperUnits', 'points', ...
-        'PaperSize', [800, 400], ...
-        'PaperPosition', [0, 0, 800, 400]);
+        'PaperSize', [514, 409], ...
+        'PaperPosition', [0, 0, 514, 409]);
 
     exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
 end

@@ -1,18 +1,17 @@
 function plotmeshb_sol(operatorName, operatorExperiment, testIds, stage)
-%PLOTMESHB_SOL Draw the FEM solution and pointwise error for Burgers.
+%PLOTMESHB_SOL Draw the FEM solution field for Burgers.
 %
 %   Same arguments and MAT lookup as plotmeshb. For every enabled method in
-%   the saved configuration, two figures are written: the finite-element
-%   solution field u_h and the pointwise error |u_h - u_ref| evaluated on
-%   the reference grid stored in the sample MAT.
+%   the saved configuration (FNO, target, AFEM, uniform), one figure is
+%   written: the finite-element solution field u_h. No error figures are
+%   produced.
 %
 % Usage:
 %   plotmeshb_sol('fno', 'b3000_mse', [1 69])
 %   plotmeshb_sol('cno', 'b3000_mse', 4, 'base')
 %
-% Output (figures/pltfig/burgers/femmesh/):
+% Output (figures/process/Burgers/):
 %   burgers_<op>_<exp>_t<k>_i<id>_<tag>_sol.pdf/.png
-%   burgers_<op>_<exp>_t<k>_i<id>_<tag>_err.pdf/.png
 
     if nargin < 1 || isempty(operatorName)
         operatorName = 'fno';
@@ -21,10 +20,10 @@ function plotmeshb_sol(operatorName, operatorExperiment, testIds, stage)
         operatorExperiment = 'b3000_mse';
     end
     if nargin < 3 || isempty(testIds)
-        testIds = 4;
+        testIds = 69;
     end
     if nargin < 4 || isempty(stage)
-        stage = 'hybrid';
+        stage = 'base';
     end
 
     root = fileparts(fileparts(fileparts(mfilename('fullpath'))));
@@ -79,16 +78,7 @@ function plotmeshb_sol(operatorName, operatorExperiment, testIds, stage)
                 'No enabled method has saved solution data for test %d.', k);
         end
 
-        ref = S.ref;
-        if ~isfield(ref, 'U') || ~isfield(ref, 'x') || ~isfield(ref, 't')
-            error('plotmeshb_sol:NoReference', ...
-                'Sample MAT has no reference solution (ref.U/x/t).');
-        end
-        refU = double(ref.U);
-        refX = double(ref.x(:));
-        refT = double(ref.t(:));
-
-        figDir = fullfile(root, 'figures', 'pltfig', 'burgers', 'sol_err');
+        figDir = fullfile(root, 'figures', 'process', 'Burgers');
         if exist(figDir, 'dir') ~= 7
             mkdir(figDir);
         end
@@ -113,16 +103,6 @@ function plotmeshb_sol(operatorName, operatorExperiment, testIds, stage)
             % Solution field.
             plotmeshb_sol_field(figDir, base, M.node, M.elem, u, ...
                 sprintf('%s solution', methods(m).label));
-
-            % Pointwise error vs reference (interpolate u_h onto ref grid).
-            F = scatteredInterpolant( ...
-                double(M.node(:, 1)), double(M.node(:, 2)), u, ...
-                'linear', 'none');
-            [XX, TT] = meshgrid(refX, refT);
-            uhRef = F(XX, TT);
-            err = abs(uhRef - refU);
-            plotmeshb_sol_error(figDir, base, refX, refT, err, ...
-                sprintf('%s pointwise error', methods(m).label));
         end
         fprintf('[plotmeshb_sol] test %d drawn from %s\n', k, filePath);
     end
@@ -132,36 +112,17 @@ end
 function plotmeshb_sol_field(figDir, base, node, elem, u, labelText)
     fig = figure('Color', 'w', 'Units', 'points', ...
         'Position', [1, 1, 514, 409], 'Visible', 'on');
-    ax = axes(fig, 'Position', [0.08, 0.08, 0.80, 0.86]);
+    ax = axes(fig, 'Position', [0.07, 0.07, 0.86, 0.86]);
     patch(ax, 'Faces', elem, 'Vertices', node, ...
         'FaceVertexCData', u, 'FaceColor', 'interp', ...
         'EdgeColor', 'none');
     axis(ax, 'tight');
-    box(ax, 'on');
-    xlabel(ax, 'x');
-    ylabel(ax, 't');
-    cb = colorbar(ax, 'Position', [0.90, 0.08, 0.03, 0.86]);
+    ax.XTick = [];
+    ax.YTick = [];
     colormap(ax, parula);
     plotmeshb_sol_export(fig, ...
         fullfile(figDir, [base '_sol.pdf']), ...
         fullfile(figDir, [base '_sol.png']));
-end
-
-
-function plotmeshb_sol_error(figDir, base, refX, refT, err, labelText)
-    fig = figure('Color', 'w', 'Units', 'points', ...
-        'Position', [1, 1, 514, 409], 'Visible', 'on');
-    ax = axes(fig, 'Position', [0.08, 0.08, 0.80, 0.86]);
-    imagesc(ax, refX, refT, err);
-    axis(ax, 'xy');
-    axis(ax, 'tight');
-    xlabel(ax, 'x');
-    ylabel(ax, 't');
-    cb = colorbar(ax, 'Position', [0.90, 0.08, 0.03, 0.86]);
-    colormap(ax, parula);
-    plotmeshb_sol_export(fig, ...
-        fullfile(figDir, [base '_err.pdf']), ...
-        fullfile(figDir, [base '_err.png']));
 end
 
 

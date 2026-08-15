@@ -1,0 +1,35 @@
+problem: cd_disk
+experiment: cd_b3000_mse
+seed: 42
+deterministic: false
+data:
+  path: data/cd_disk/cd_disk_3100.mat
+  total_samples: 3100
+  train_samples: 3000
+  test_samples: 100
+  split_mode: prefix_train_tail_test
+model:
+  name: cno
+  in_channels: 5
+  out_channels: 1
+  width: 14
+  levels: 2
+  n_res_bottleneck: 2
+  n_res_intermediate: 2
+  kernel_size: 3
+  activation: gelu
+  dropout: 0.0
+training:
+  loss: mse
+  epochs: 1000
+  batch_size: 16
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  device: cuda:0
+  log_every: 10
+score:
+  maximum: 12
+  generation_threshold: 0.50

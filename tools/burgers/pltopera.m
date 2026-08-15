@@ -23,13 +23,13 @@ function pltopera(operatorName, operatorExperiment, testIds)
 % A PNG (300 dpi) is written next to each PDF.
 
     if nargin < 1 || isempty(operatorName)
-        operatorName = 'cno';
+        operatorName = 'fno';
     end
     if nargin < 2 || isempty(operatorExperiment)
         operatorExperiment = 'b3000_mse';
     end
     if nargin < 3 || isempty(testIds)
-        testIds = 69;
+        testIds = 4;
     end
 
     % Project root: tools/burgers/pltopera.m -> project root.

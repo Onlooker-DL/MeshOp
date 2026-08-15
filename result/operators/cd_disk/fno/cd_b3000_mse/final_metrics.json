@@ -1,0 +1,45 @@
+{
+  "code_version": "FNO_CD_DISK_V1",
+  "method": "FNO2d continuous refinement-score regression (CD disk)",
+  "problem": "cd_disk",
+  "model": "fno",
+  "training_samples": 3000,
+  "test_samples": 100,
+  "training_time_sec": 1.1920928955078125e-06,
+  "final_training_loss": 0.35859309760729474,
+  "final_training_metrics": {
+    "mae": 0.2805401914914449,
+    "rmse": 0.5987342836062114,
+    "rounded_accuracy": 0.7850817473729451,
+    "within_0p5": 0.7850817473729451,
+    "within_1": 0.925663778146108,
+    "under_refinement_rate": 0.12193680836757025,
+    "over_refinement_rate": 0.09298144537210465,
+    "ceil_level_mae": 0.2522444662253062
+  },
+  "test_loss": 0.5311729049682617,
+  "test_metrics": {
+    "mae": 0.35606255769729617,
+    "rmse": 0.7287371516227722,
+    "rounded_accuracy": 0.7406311106681823,
+    "within_0p5": 0.7406311106681823,
+    "within_1": 0.8793591356277466,
+    "under_refinement_rate": 0.1429089379310608,
+    "over_refinement_rate": 0.11645996212959289,
+    "ceil_level_mae": 0.3339672827720642
+  },
+  "timing": {
+    "total_test_inference_time_sec": 0.01415442923704783,
+    "mean_inference_time_sec_per_sample": 0.00014154429237047832,
+    "throughput_samples_per_sec": 7064.926343922071,
+    "timing_repeats": 3
+  },
+  "trainable_parameters_real": 112281,
+  "trainable_parameters": 56985,
+  "parameter_storage_mib": 0.4283180236816406,
+  "epochs": 1000,
+  "grid": [
+    64,
+    128
+  ]
+}

@@ -23,7 +23,7 @@ function plotmeshb(operatorName, operatorExperiment, testIds, stage)
         operatorExperiment = 'b3000_mse';
     end
     if nargin < 3 || isempty(testIds)
-        testIds = 4;
+        testIds =69;
     end
     if nargin < 4 || isempty(stage)
         stage = 'hybrid';
@@ -107,9 +107,9 @@ function plotmeshb_one_sample( ...
     for k = 1:numel(methods)
     % Burgers space--time domain: (-1,1) x (0,1), physical aspect ratio 2:1.
     fig = figure('Color', 'w', 'Units', 'points', ...
-        'Position', [1, 1, 800, 400], 'Visible', 'on');
+        'Position', [1, 1, 514, 409], 'Visible', 'on');
 
-    ax = axes(fig, 'Position', [0.06, 0.06, 0.88, 0.88]);
+    ax = axes(fig, 'Position', [0.07, 0.07, 0.86, 0.86]);
 
     M = methods(k).M;
 
@@ -120,18 +120,11 @@ function plotmeshb_one_sample( ...
         'EdgeColor', [0.4 0.4 0.4], ...
         'LineWidth', 0.25);
 
-    axis(ax, 'equal');
     axis(ax, 'tight');
-    box(ax, 'on');
-
-    xlabel(ax, 'x');
-    ylabel(ax, 't');
-
-    set(ax, ...
-        'FontSize', 11, ...
-        'LineWidth', 0.75, ...
-        'TickDir', 'out', ...
-        'Layer', 'top');
+    axis(ax, 'off');
+    if isprop(ax, 'Toolbar') && ~isempty(ax.Toolbar)
+        ax.Toolbar.Visible = 'off';
+    end
 
     outPdf = fullfile(figDir, sprintf( ...
         'burgers_%s_%s_t%03d_i%04d_%s.pdf', ...
@@ -234,7 +227,7 @@ end
 function plotmeshb_export(fig, outPdf)
     % Fixed 800 x 400 pt (2:1) page matching the Burgers domain.
     set(fig, 'PaperUnits', 'points', ...
-        'PaperSize', [800, 400], ...
-        'PaperPosition', [0, 0, 800, 400]);
+        'PaperSize', [514, 409], ...
+        'PaperPosition', [0, 0, 514, 409]);
     exportgraphics(fig, outPdf, 'ContentType', 'image', 'Resolution', 150);
 end

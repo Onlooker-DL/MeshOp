@@ -26,7 +26,7 @@ function pltopera_rd(operatorName, operatorExperiment, testIds)
         operatorExperiment = 'rd_accu_b3000_mse';
     end
     if nargin < 3 || isempty(testIds)
-        testIds = 65;
+        testIds = 1;
     end
 
     % Project root: tools/reaction_diffusion/pltopera_rd.m.
