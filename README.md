@@ -68,7 +68,7 @@ tools/                          Auxiliary utilities and helper scripts
 - Python 3.12
 - PyTorch with a CUDA build (experiments in the paper used one NVIDIA RTX A6000,
   48 GB)
-- `numpy`, `scipy`, `h5py`, `matplotlib`, `pyyaml`
+- `numpy`,`scipy`, `h5py`, `matplotlib`, `pyyaml`
 
 Example:
 
@@ -130,8 +130,7 @@ Outputs are written to
 - checkpoints and training logs (see `logs/`)
 
 Full training instructions and the list of all configurations are in
-`experiments/README.md`. Minimal end-to-end examples are in `examples/`.
-Selected trained operator exports are included under `result/operators/` so the
+`experiments/README.md`. Selected trained operator exports are included under `result/operators/` so the
 FEM stage can be reproduced without re-training — see `result/README.md`.
 
 ### 3. FEM evaluation (MATLAB)
@@ -162,8 +161,7 @@ automatically from `result/operators/...` and `data/...`, and writes:
 - Paper experiments ran on two Intel Xeon Gold 6240 CPUs, 187 GiB RAM, and one
   NVIDIA RTX A6000 (48 GB). Neural operators were trained on the GPU; mesh
   construction and finite-element solves ran on the CPU in MATLAB.
-- Set `deterministic: optional` in a YAML config to enable deterministic PyTorch
-  algorithms (slower, but bit-reproducible on the same hardware).
+- Set `deterministic: optional` in a YAML config.
 
 ## License
 

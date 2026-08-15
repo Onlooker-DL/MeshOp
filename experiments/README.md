@@ -50,11 +50,11 @@ python experiments/<problem>/operator/run_operator.py \
 ```
 
 Recommended launch pattern (background, detached, logged). Replace
-`/path/to/MeshOp-Learning-Mesh-Refinement-Operators-for-Adaptive-PDE-Solvers` with your repository location and `python`
+`/path/to/MeshOp` with your repository location and `python`
 with your environment's interpreter:
 
 ```bash
-cd /path/to/MeshOp-Learning-Mesh-Refinement-Operators-for-Adaptive-PDE-Solvers
+cd /path/to/MeshOp
 
 mkdir -p .runtime/tmp logs
 export TMPDIR="$PWD/.runtime/tmp"
@@ -142,13 +142,6 @@ Each run writes to `result/operators/<problem>/<model>/<experiment>/`:
 
 ## Monitoring and troubleshooting
 
-- `jobs -l` — shows running jobs (`Running`) or the exit status of finished ones.
-- `tail -f logs/<name>.log` — follow training progress.
-- `nvidia-smi` — check GPU utilization.
-- Exit code 2 usually means the Python entry point could not be opened
-  (`can't open file 'experiments/...'`) because the command was launched from
-  the wrong working directory — all paths are relative to the repository
-  root, so `cd` into the repo first.
 - Training is long: e.g. the RD-accu FNO b3000 run takes about 19 hours on an
   RTX A6000 (1000 epochs). If a run is slow, make sure
   `training.bf16_amp: true` is set and increase `training.batch_size` up to
