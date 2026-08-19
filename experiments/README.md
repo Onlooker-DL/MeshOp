@@ -1,8 +1,9 @@
 # Experiments — operator training
 
-This directory contains the two experiment suites of the paper:
+This directory contains the three experiment suites of the paper:
 
 - `burgers/` — space–time Burgers (1-D space + time, 5100 samples)
+- `cd_disk/` — 2-D disk convection–diffusion
 - `reaction_diffusion_accu/` — accuracy-stopped 3-D steady reaction–diffusion (up to 3100 samples)
 
 Each suite follows the same two-stage pipeline:
@@ -22,6 +23,11 @@ experiments/
     operator/configs/operators/*.yaml
     fem/burgers_fem_config.m
     fem/run_burgers_fem.m
+  cd_disk/
+    operator/run_operator.py
+    operator/configs/operators/*.yaml
+    fem/cd_disk_fem_config.m
+    fem/run_cd_disk_fem.m
   reaction_diffusion_accu/
     operator/run_operator.py
     operator/configs/operators/*.yaml
@@ -114,6 +120,17 @@ FNO parameter counts are reported in complex-valued parameters; each complex par
 | `pod_deeponet_b2000.yaml` | POD-DeepONet | 2000 | `b2000_mse` |
 | `pod_deeponet_b3000.yaml` | POD-DeepONet | 3000 | `b3000_mse` |
 
+### Disk convection–diffusion
+
+| Config | Model | Train samples | Output experiment |
+| --- | --- | --- | --- |
+| `fno_b1000.yaml` | FNO | 1000 | `b1000_mse` |
+| `fno_b2000.yaml` | FNO | 2000 | `b2000_mse` |
+| `fno_b3000.yaml` | FNO | 3000 | `b3000_mse` |
+| `cno_b3000.yaml` | CNO | 3000 | `b3000_mse` |
+| `deeponet_b3000.yaml` | DeepONet | 3000 | `b3000_mse` |
+| `pod_deeponet_b3000.yaml` | POD-DeepONet | 3000 | `b3000_mse` |
+
 ### Reaction–diffusion (accuracy-stopped)
 
 | Config | Model | Train samples | Output experiment |
@@ -158,5 +175,6 @@ After training, set the trained operator in the FEM config
 
 ```matlab
 run_burgers_fem
+run_cd_disk_fem
 run_reaction_diffusion_accu_fem
 ```
