@@ -15,7 +15,8 @@ continued from the operator-generated mesh when additional accuracy is needed.
 Four operator backbones are supported: FNO, CNO, DeepONet (including a
 multi-branch variant), and POD-DeepONet. Finite-element
 computations run in MATLAB; operator training and inference run in Python
-(PyTorch).
+(PyTorch). Direct-solution versions of the four neural operators are provided
+as comparison baselines under `baseline/neural_operator_solution/`.
 
 ## Repository structure
 
@@ -28,6 +29,9 @@ LICENSE                         BSD 3-Clause License
 
 data/
   README.md                     Data download and placement instructions
+
+baseline/
+  neural_operator_solution/    Direct PDE-solution operator baselines
 
 examples/
   burgers_fem_single_sample/    Minimal MATLAB example for a one-sample FEM solve
@@ -132,6 +136,21 @@ Outputs are written to
 Full training instructions and the list of all configurations are in
 `experiments/README.md`. Selected trained operator exports are included under `result/operators/` so the
 FEM stage can be reproduced without re-training — see `result/README.md`.
+
+### Direct-solution neural-operator baselines
+
+For comparison with MeshOp's mesh-refinement-score prediction, the repository
+also includes FNO, CNO, DeepONet, and POD-DeepONet baselines that predict the
+PDE solution directly. They cover Burgers, disk convection-diffusion, and
+three-dimensional reaction-diffusion, using the first 3000 samples for
+training and samples 3001--3100 for testing.
+
+The baseline reuses the three original MAT files from the same GitHub Release.
+Included MATLAB programs generate the required spectral or exact reference
+solutions locally; the generated HDF5 files are not committed. See
+[`baseline/neural_operator_solution/README.md`](baseline/neural_operator_solution/README.md)
+for data preparation, GPU launch commands, configurations, metrics, and output
+locations.
 
 ### 3. FEM evaluation (MATLAB)
 

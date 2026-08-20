@@ -1,0 +1,31 @@
+problem: reaction_diffusion
+experiment: b3000_exact_solution_mse
+seed: 42
+data:
+  path: data/reaction_diffusion/reaction_diffusion_exact_3100.h5
+  train_samples: 3000
+  test_samples: 100
+model:
+  name: fno
+  in_channels: 4
+  width: 11
+  modes_x: 5
+  modes_y: 5
+  modes_z: 5
+  layers: 4
+  projection_width: 64
+  padding: 4
+  dropout: 0.03
+training:
+  epochs: 1000
+  batch_size: 8
+  inference_sample_batch_size: 2
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  device: cuda:0
+  bf16_amp: true
+  log_every: 10
+  save_every: 10

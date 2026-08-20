@@ -1,0 +1,30 @@
+problem: cd_disk
+experiment: b3000_spectral_solution_mse
+seed: 42
+data:
+  path: data/cd_disk/cd_disk_spectral_3100.h5
+  train_samples: 3000
+  test_samples: 100
+model:
+  name: cno
+  in_channels: 5
+  out_channels: 1
+  width: 14
+  levels: 2
+  n_res_bottleneck: 2
+  n_res_intermediate: 2
+  kernel_size: 3
+  activation: gelu
+  dropout: 0.0
+training:
+  epochs: 1000
+  batch_size: 16
+  inference_sample_batch_size: 8
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  device: cuda:0
+  log_every: 10
+  save_every: 50

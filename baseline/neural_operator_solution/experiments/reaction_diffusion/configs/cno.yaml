@@ -1,0 +1,32 @@
+problem: reaction_diffusion
+experiment: b3000_exact_solution_mse
+seed: 42
+data:
+  path: data/reaction_diffusion/reaction_diffusion_exact_3100.h5
+  train_samples: 3000
+  test_samples: 100
+model:
+  name: cno
+  dim: 3
+  in_channels: 4
+  out_channels: 1
+  width: 10
+  levels: 3
+  n_res_bottleneck: 1
+  n_res_intermediate: 1
+  kernel_size: 3
+  activation: gelu
+  dropout: 0.0
+training:
+  epochs: 1000
+  batch_size: 4
+  inference_sample_batch_size: 1
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  device: cuda:0
+  bf16_amp: true
+  log_every: 10
+  save_every: 10

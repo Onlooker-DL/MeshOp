@@ -1,0 +1,29 @@
+problem: reaction_diffusion
+experiment: b3000_exact_solution_mse
+seed: 42
+data:
+  path: data/reaction_diffusion/reaction_diffusion_exact_3100.h5
+  train_samples: 3000
+  test_samples: 100
+model:
+  name: pod_deeponet
+  hidden_dim: 56
+  depth: 4
+  activation: gelu
+  dropout: 0.0
+pod:
+  energy: 0.99
+  maximum_rank: 128
+  oversampling: 16
+  sample_chunk: 4
+training:
+  epochs: 5000
+  batch_size: 16
+  num_workers: 4
+  learning_rate: 1.0e-3
+  eta_min: 1.0e-5
+  weight_decay: 1.0e-6
+  grad_clip: 1.0
+  device: cuda:0
+  log_every: 10
+  save_every: 50

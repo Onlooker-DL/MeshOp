@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+.runtime/
+pymp-*/
+
+data/**/*.h5
+data/**/*.mat
+
+results/
+logs/
+*.log
+nohup.out
+
+*.pt
+*.pth
+*.ckpt
