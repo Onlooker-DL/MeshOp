@@ -26,7 +26,7 @@ addParameter(p,'NumWorkers',4,@(x)isnumeric(x)&&isscalar(x)&&x>=0);
 addParameter(p,'MaxBatches',inf,@(x)isnumeric(x)&&isscalar(x)&&x>=1);
 addParameter(p,'Overwrite',false,@(x)islogical(x)||isnumeric(x));
 addParameter(p,'Epsilon',0.02,@(x)isnumeric(x)&&isscalar(x)&&x>0);
-addParameter(p,'ReferenceCellsXY',64,@(x)isnumeric(x)&&isscalar(x)&&x>=8);
+addParameter(p,'ReferenceCellsXY',256,@(x)isnumeric(x)&&isscalar(x)&&x>=8);
 addParameter(p,'BoundaryMultiplier',30,@(x)isnumeric(x)&&isscalar(x)&&x>0);
 parse(p,varargin{:});
 cfg=p.Results;
