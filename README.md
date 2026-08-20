@@ -177,7 +177,7 @@ automatically from `result/operators/...` and `data/...`, and writes:
 
 ## Reproducibility notes
 
-- Random seeds: `cfg.seed = 900` in the MATLAB data generators; all neural-operator configs under `experiments/*/operator/configs/operators/` use `seed: 42`.
+- Random seeds: all neural-operator configs under `experiments/*/operator/configs/operators/` use `seed: 42`.
 - The data split is deterministic (`prefix_train_tail_test`: first N samples
   for training, final 100 samples for testing).
 - Paper experiments ran on two Intel Xeon Gold 6240 CPUs, 187 GiB RAM, and one
