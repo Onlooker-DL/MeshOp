@@ -25,6 +25,7 @@ from torch.utils.data import DataLoader, Dataset
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from src.evaluation.physical_l2 import burgers_quadrature_weights, solution_metrics
 from src.models import CNO, DeepONet, FNO2dSolutionOperator, PODCoefficientNet
 
 
@@ -620,23 +621,6 @@ def train_pod(
     return fields, history, training_time, inference_time
 
 
-def solution_metrics(prediction: np.ndarray, target: np.ndarray) -> dict[str, float]:
-    difference = prediction.astype(np.float64) - target.astype(np.float64)
-    flat_difference = difference.reshape(difference.shape[0], -1)
-    flat_target = target.astype(np.float64).reshape(target.shape[0], -1)
-    relative = np.linalg.norm(flat_difference, axis=1) / np.maximum(
-        np.linalg.norm(flat_target, axis=1), 1.0e-12
-    )
-    return {
-        "mse": float(np.mean(np.square(difference))),
-        "rmse": float(np.sqrt(np.mean(np.square(difference)))),
-        "mae": float(np.mean(np.abs(difference))),
-        "mean_relative_l2": float(np.mean(relative)),
-        "median_relative_l2": float(np.median(relative)),
-        "maximum_relative_l2": float(np.max(relative)),
-    }
-
-
 def write_history(path: Path, history: list[dict[str, float]]) -> None:
     if not history:
         return
@@ -854,7 +838,8 @@ def main() -> None:
 
     prediction = target_norm.decode(normalized_prediction)
     target_test = data.solution[test_indices]
-    metrics = solution_metrics(prediction, target_test)
+    quadrature_weights = burgers_quadrature_weights(data.query_x, data.query_t)
+    metrics = solution_metrics(prediction, target_test, quadrature_weights)
     final = {
         "problem": "burgers_direct_solution",
         "model": model_name,
@@ -888,6 +873,11 @@ def main() -> None:
         },
         "parameter_count": counts,
         "test_metrics": metrics,
+        "relative_l2_evaluation": {
+            "definition": "mean of per-sample physical-domain relative L2 errors",
+            "quadrature": "periodic trapezoidal x tensor nonperiodic trapezoidal t",
+            "legacy_metric": "test_metrics.mean_relative_discrete_l2",
+        },
         "pod": pod_details,
     }
     with (out_dir / "final_metrics.json").open("w", encoding="utf-8") as handle:
@@ -911,6 +901,9 @@ def main() -> None:
         handle.create_dataset("query_x", data=data.query_x)
         handle.create_dataset("query_t", data=data.query_t)
         handle.create_dataset("source_attempt_id", data=data.source_ids[test_indices])
+        handle.attrs["relative_l2_definition"] = (
+            "mean of per-sample physical-domain quadrature relative L2 errors"
+        )
         for key, value in metrics.items():
             handle.attrs[key] = value
     print(json.dumps(final, indent=2))

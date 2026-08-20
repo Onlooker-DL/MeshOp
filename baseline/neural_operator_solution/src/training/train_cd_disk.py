@@ -14,6 +14,10 @@ from torch.utils.data import Dataset
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
+from src.evaluation.physical_l2 import (  # noqa: E402
+    cd_disk_quadrature_weights,
+    solution_metrics,
+)
 from src.models import DeepONet, PODCoefficientNet  # noqa: E402
 from src.training.train_burgers import (  # noqa: E402
     BranchDataset,
@@ -22,7 +26,6 @@ from src.training.train_burgers import (  # noqa: E402
     parameter_counts,
     randomized_pod,
     seed_everything,
-    solution_metrics,
     train_deeponet,
     train_grid_model,
     train_pod,
@@ -142,7 +145,8 @@ def main() -> None:
         raise ValueError(f"Unsupported model {name}")
 
     counts = parameter_counts(model)
-    metrics = solution_metrics(prediction, target[test_ids])
+    quadrature_weights = cd_disk_quadrature_weights(r, theta)
+    metrics = solution_metrics(prediction, target[test_ids], quadrature_weights)
     print(f"[parameters] equivalent real parameters={counts['real_trainable_parameters']:,}")
     with h5py.File(out_dir / "predictions.h5", "w") as h:
         h.create_dataset("prediction", data=prediction, compression="gzip", compression_opts=1)
@@ -150,6 +154,9 @@ def main() -> None:
         h.create_dataset("r", data=r)
         h.create_dataset("theta", data=theta)
         h.create_dataset("source_sample_id", data=data["source_id"][test_ids])
+        h.attrs["relative_l2_definition"] = (
+            "mean of per-sample physical-domain quadrature relative L2 errors"
+        )
     final = {
         "problem": "cd_disk",
         "model": name,
@@ -161,6 +168,11 @@ def main() -> None:
         "mean_inference_time_sec_per_sample": inference_time / ntest,
         "inference_throughput_samples_per_sec": ntest / inference_time,
         "test_metrics": metrics,
+        "relative_l2_evaluation": {
+            "definition": "mean of per-sample physical-domain relative L2 errors",
+            "quadrature": "polar control-volume r dr tensor periodic trapezoidal dtheta",
+            "legacy_metric": "test_metrics.mean_relative_discrete_l2",
+        },
         "parameter_count": counts,
         "optimizer": "AdamW",
         "scheduler": "CosineAnnealingLR",

@@ -16,6 +16,10 @@ from torch.utils.data import Dataset
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
+from src.evaluation.physical_l2 import (  # noqa: E402
+    reaction_diffusion_quadrature_weights,
+    solution_metrics,
+)
 from src.models import CNO, DeepONet, FNO3dSolutionOperator, PODCoefficientNet  # noqa: E402
 from src.training.train_burgers import (  # noqa: E402
     make_loader,
@@ -185,17 +189,6 @@ def train_deep_stream(model: DeepONet, loader: torch.utils.data.DataLoader, test
     return output, history, elapsed, inference_time
 
 
-def metrics_stream(prediction: np.ndarray, target: np.ndarray) -> dict[str, float]:
-    squared, absolute, points, relative = 0.0, 0.0, 0, []
-    for i in range(prediction.shape[0]):
-        diff = prediction[i].astype(np.float64) - target[i].astype(np.float64)
-        squared += float(np.sum(diff * diff))
-        absolute += float(np.sum(np.abs(diff)))
-        points += diff.size
-        relative.append(float(np.linalg.norm(diff.ravel()) / max(np.linalg.norm(target[i].ravel()), 1.0e-12)))
-    return {"mse": squared / points, "rmse": float(np.sqrt(squared / points)), "mae": absolute / points, "mean_relative_l2": float(np.mean(relative)), "median_relative_l2": float(np.median(relative)), "maximum_relative_l2": float(np.max(relative))}
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="Train a direct reaction-diffusion solution operator.")
     parser.add_argument("--config", type=Path, required=True)
@@ -261,14 +254,18 @@ def main() -> None:
     with h5py.File(path, "r") as h:
         target = np.asarray(h["solution"][test_ids], dtype=np.float32)
     counts = parameter_counts(model)
-    test_metrics = metrics_stream(prediction, target)
+    quadrature_weights = reaction_diffusion_quadrature_weights(x, y, z)
+    test_metrics = solution_metrics(prediction, target, quadrature_weights)
     print(f"[parameters] equivalent real parameters={counts['real_trainable_parameters']:,}")
     with h5py.File(out_dir / "predictions.h5", "w") as h:
         h.create_dataset("prediction", data=prediction, compression="gzip", compression_opts=1)
         h.create_dataset("target", data=target, compression="gzip", compression_opts=1)
         h.create_dataset("x", data=x); h.create_dataset("y", data=y); h.create_dataset("z", data=z)
         h.create_dataset("source_sample_id", data=data["source_id"][test_ids])
-    final = {"problem": "reaction_diffusion", "model": name, "training_samples": ntrain, "test_samples": ntest, "split": "samples 1:3000 train, 3001:3100 test", "training_time_sec": elapsed, "test_inference_time_sec": inference_time, "mean_inference_time_sec_per_sample": inference_time / ntest, "inference_throughput_samples_per_sec": ntest / inference_time, "test_metrics": test_metrics, "parameter_count": counts, "optimizer": "AdamW", "scheduler": "CosineAnnealingLR", "learning_rate": float(training["learning_rate"]), "eta_min": float(training["eta_min"]), "weight_decay": float(training["weight_decay"])}
+        h.attrs["relative_l2_definition"] = (
+            "mean of per-sample physical-domain quadrature relative L2 errors"
+        )
+    final = {"problem": "reaction_diffusion", "model": name, "training_samples": ntrain, "test_samples": ntest, "split": "samples 1:3000 train, 3001:3100 test", "training_time_sec": elapsed, "test_inference_time_sec": inference_time, "mean_inference_time_sec_per_sample": inference_time / ntest, "inference_throughput_samples_per_sec": ntest / inference_time, "test_metrics": test_metrics, "relative_l2_evaluation": {"definition": "mean of per-sample physical-domain relative L2 errors", "quadrature": "tensor-product trapezoidal dx dy dz on the stored nonuniform z grid", "legacy_metric": "test_metrics.mean_relative_discrete_l2"}, "parameter_count": counts, "optimizer": "AdamW", "scheduler": "CosineAnnealingLR", "learning_rate": float(training["learning_rate"]), "eta_min": float(training["eta_min"]), "weight_decay": float(training["weight_decay"])}
     if pod_details is not None:
         final["pod"] = pod_details
     with (out_dir / "final_metrics.json").open("w", encoding="utf-8") as handle:

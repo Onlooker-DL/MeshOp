@@ -163,3 +163,22 @@ The directory contains the resolved configuration, checkpoint, training
 history, test predictions, and `final_metrics.json`. Final metrics include test
 MSE/RMSE/MAE, relative L2 errors, total training time, test inference time,
 per-sample inference time, optimizer settings, and parameter counts.
+
+For all three equations, `test_metrics.mean_relative_l2` is the mean of the
+per-sample physical-domain relative L2 errors. Burgers uses periodic-x and
+nonperiodic-time quadrature, CD uses the polar measure `r dr dtheta`, and RD
+uses `dx dy dz` weights on its nonuniform `z=s^2` grid. The former flattened
+query-array metric remains available as `mean_relative_discrete_l2`. Training,
+checkpoint re-evaluation, and the Burgers AFEM baseline call the same shared
+evaluation module.
+
+Existing `predictions.h5` files from any of the three equations can be
+re-evaluated without training:
+
+```bash
+python -u src/training/reevaluate_saved_predictions.py \
+  --predictions results/<problem>/<model>/<experiment>/predictions.h5
+```
+
+This writes `physical_l2_metrics.json` beside the prediction file and leaves
+the historical result files unchanged.

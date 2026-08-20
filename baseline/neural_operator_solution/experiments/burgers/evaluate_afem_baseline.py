@@ -5,27 +5,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import h5py
 import numpy as np
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
 
-def metrics(prediction: np.ndarray, target: np.ndarray) -> dict[str, float]:
-    difference = prediction.astype(np.float64) - target.astype(np.float64)
-    flat_difference = difference.reshape(difference.shape[0], -1)
-    flat_target = target.astype(np.float64).reshape(target.shape[0], -1)
-    relative = np.linalg.norm(flat_difference, axis=1) / np.maximum(
-        np.linalg.norm(flat_target, axis=1), 1.0e-12
-    )
-    return {
-        "mse": float(np.mean(np.square(difference))),
-        "rmse": float(np.sqrt(np.mean(np.square(difference)))),
-        "mae": float(np.mean(np.abs(difference))),
-        "mean_relative_l2": float(np.mean(relative)),
-        "median_relative_l2": float(np.median(relative)),
-        "maximum_relative_l2": float(np.max(relative)),
-    }
+from src.evaluation.physical_l2 import (  # noqa: E402
+    burgers_quadrature_weights,
+    solution_metrics,
+)
 
 
 def main() -> None:
@@ -83,6 +75,7 @@ def main() -> None:
     test_slice = slice(3000, 3100)
     train_source_indices = source_indices[train_slice]
     test_source_indices = source_indices[test_slice]
+    quadrature_weights = burgers_quadrature_weights(x, t)
     result = {
         "method": "AFEM final finite iterate sampled on the 101x101 query grid",
         "reference": "512-point Fourier ETDRK4 spectral solution",
@@ -96,8 +89,17 @@ def main() -> None:
         ],
         "source_attempt_id_test_min": int(source_ids[test_slice].min()),
         "source_attempt_id_test_max": int(source_ids[test_slice].max()),
-        "train_metrics": metrics(afem[train_slice], spectral[train_slice]),
-        "test_metrics": metrics(afem[test_slice], spectral[test_slice]),
+        "relative_l2_evaluation": {
+            "definition": "mean of per-sample physical-domain relative L2 errors",
+            "quadrature": "periodic trapezoidal x tensor nonperiodic trapezoidal t",
+            "legacy_metric": "*_metrics.mean_relative_discrete_l2",
+        },
+        "train_metrics": solution_metrics(
+            afem[train_slice], spectral[train_slice], quadrature_weights
+        ),
+        "test_metrics": solution_metrics(
+            afem[test_slice], spectral[test_slice], quadrature_weights
+        ),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as handle:
