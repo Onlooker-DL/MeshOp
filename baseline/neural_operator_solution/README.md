@@ -24,6 +24,7 @@ from Git.
 data/                          MATLAB reference-data generators
 experiments/<problem>/configs  Model and training YAML files
 scripts/<problem>/             Data-generation and run-all launchers
+src/evaluate/                    
 src/models/                    FNO, CNO, DeepONet, and POD-DeepONet
 src/training/                  Problem-specific training entry points
 ```
