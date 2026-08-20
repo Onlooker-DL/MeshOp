@@ -11,9 +11,12 @@ Three problems are supported:
 - convection-diffusion on the unit disk (`cd_disk`);
 - three-dimensional reaction-diffusion.
 
-The first 3000 samples are used for training and samples 3001--3100 are used
-for testing in every problem. The generated reference files and all training
-outputs are intentionally excluded from Git.
+Each problem uses 3000 training samples and 100 held-out test samples. Burgers
+uses source samples 1--3000 for training and 5001--5100 for testing so that its
+test set matches the MeshOp Burgers experiment. CD-disk and reaction-diffusion
+use source samples 1--3000 for training and 3001--3100 for testing. The
+generated reference files and all training outputs are intentionally excluded
+from Git.
 
 ## Layout
 

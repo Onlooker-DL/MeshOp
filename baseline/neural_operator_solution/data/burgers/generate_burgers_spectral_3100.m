@@ -1,15 +1,21 @@
 function generate_burgers_spectral_3100(varargin)
-%GENERATE_BURGERS_SPECTRAL_3100 Build direct-solution labels for samples 1:3100.
+%GENERATE_BURGERS_SPECTRAL_3100 Build the paired 3000/100 split.
+%
+% By default the output contains 3100 rows in this order:
+%   rows 1:3000    <- burgers_5100.mat samples 1:3000 (training)
+%   rows 3001:3100 <- burgers_5100.mat samples 5001:5100 (testing)
 %
 % Put burgers_5100.mat in the same folder as this file, then run:
 %
-%   cd D:\NOEM\neural_operator_solution\data\burgers
+%   cd('/path/to/MeshOp/baseline/neural_operator_solution/data/burgers')
 %   generate_burgers_spectral_3100
 %
 % Optional examples:
 %
-%   generate_burgers_spectral_3100('BatchSize',16,'NumWorkers',8)
-%   generate_burgers_spectral_3100('UseParallel',false,'BatchSize',4)
+%   generate_burgers_spectral_3100( ...
+%       'BatchSize',16,'NumWorkers',8)
+%   generate_burgers_spectral_3100( ...
+%       'UseParallel',false,'BatchSize',4)
 %
 % The method matches the AFEM data generator reference:
 %   - periodic Fourier pseudo-spectral discretization in x;
@@ -33,6 +39,10 @@ addParameter(parser,'SourceFile',fullfile(baseDir,'burgers_5100.mat'), ...
     @(x)ischar(x) || isstring(x));
 addParameter(parser,'OutputFile',fullfile(baseDir,'burgers_spectral_3100.h5'), ...
     @(x)ischar(x) || isstring(x));
+addParameter(parser,'SourceSampleIndices',[1:3000,5001:5100], ...
+    @(x)isnumeric(x) && isvector(x) && ~isempty(x));
+addParameter(parser,'TrainSamples',3000, ...
+    @(x)isnumeric(x) && isscalar(x) && x>=0);
 addParameter(parser,'BatchSize',16,@(x)isnumeric(x) && isscalar(x) && x>=1);
 addParameter(parser,'UseParallel',true,@(x)islogical(x) || isnumeric(x));
 addParameter(parser,'NumWorkers',0,@(x)isnumeric(x) && isscalar(x) && x>=0);
@@ -46,6 +56,8 @@ cfg = parser.Results;
 
 cfg.SourceFile = char(cfg.SourceFile);
 cfg.OutputFile = char(cfg.OutputFile);
+cfg.SourceSampleIndices = round(double(cfg.SourceSampleIndices(:).'));
+cfg.TrainSamples = round(double(cfg.TrainSamples));
 cfg.BatchSize = round(double(cfg.BatchSize));
 cfg.NumWorkers = round(double(cfg.NumWorkers));
 cfg.MaxBatches = double(cfg.MaxBatches);
@@ -54,9 +66,8 @@ cfg.SensorNx = round(double(cfg.SensorNx));
 cfg.Dt = double(cfg.Dt);
 cfg.UseParallel = logical(cfg.UseParallel);
 cfg.Overwrite = logical(cfg.Overwrite);
-cfg.NumSamples = 3100;
-cfg.TrainSamples = 3000;
-cfg.TestSamples = 100;
+cfg.NumSamples = numel(cfg.SourceSampleIndices);
+cfg.TestSamples = cfg.NumSamples-cfg.TrainSamples;
 cfg.Nu = 5.0e-3;
 cfg.Xmin = -1.0;
 cfg.Xmax = 1.0;
@@ -66,6 +77,14 @@ cfg.DealiasFraction = 2/3;
 
 if mod(cfg.SpectralNx,2)~=0
     error('SpectralNx must be even.');
+end
+if any(cfg.SourceSampleIndices<1) || ...
+        any(cfg.SourceSampleIndices~=round(cfg.SourceSampleIndices)) || ...
+        numel(unique(cfg.SourceSampleIndices))~=cfg.NumSamples
+    error('SourceSampleIndices must contain unique positive integers.');
+end
+if cfg.TrainSamples>cfg.NumSamples
+    error('TrainSamples cannot exceed the number of selected samples.');
 end
 if ~isfile(cfg.SourceFile)
     error(['Source MAT file not found:\n  %s\nPlace burgers_5100.mat ', ...
@@ -77,7 +96,18 @@ end
 
 fprintf('Source : %s\n',cfg.SourceFile);
 fprintf('Output : %s\n',cfg.OutputFile);
-fprintf('Split  : samples 1:3000 train, 3001:3100 test\n');
+fprintf('Rows   : %d total (%d train, %d test)\n', ...
+    cfg.NumSamples,cfg.TrainSamples,cfg.TestSamples);
+if cfg.TrainSamples>0
+    fprintf('Train  : source samples %d:%d\n', ...
+        cfg.SourceSampleIndices(1), ...
+        cfg.SourceSampleIndices(cfg.TrainSamples));
+end
+if cfg.TestSamples>0
+    fprintf('Test   : source samples %d:%d\n', ...
+        cfg.SourceSampleIndices(cfg.TrainSamples+1), ...
+        cfg.SourceSampleIndices(end));
+end
 fprintf('Solver : Fourier ETDRK4, N=%d, dt=%.8g, nu=%.8g\n', ...
     cfg.SpectralNx,cfg.Dt,cfg.Nu);
 
@@ -107,7 +137,8 @@ if useParallel
         end
         fprintf('Parallel pool: %d workers\n',pool.NumWorkers);
     catch poolError
-        warning('Parallel pool failed (%s). Falling back to serial generation.', ...
+        warning('NOEM:BurgersSpectral:ParallelPoolFailed', ...
+            'Parallel pool failed (%s). Falling back to serial generation.', ...
             poolError.message);
         useParallel = false;
     end
@@ -196,8 +227,9 @@ end
 
 M = matfile(fileName);
 icSize = size(M,'ic_coefficients');
-if icSize(2)<cfg.NumSamples
-    error('ic_coefficients has only %d samples.',icSize(2));
+if icSize(2)<max(cfg.SourceSampleIndices)
+    error('ic_coefficients has only %d samples; sample %d was requested.', ...
+        icSize(2),max(cfg.SourceSampleIndices));
 end
 
 source.grf_modes = double(M.grf_modes(:,1));
@@ -206,9 +238,17 @@ source.forcing_modes = double(M.forcing_modes(:,1));
 source.forcing_std = double(M.forcing_spectral_std(:,1));
 source.query_x = double(M.query_x(:,1));
 source.query_t = double(M.query_t(:,1));
-source.ic = double(M.ic_coefficients(:,1:cfg.NumSamples));
-source.forcing_cos = double(M.forcing_xi_cos(:,1:cfg.NumSamples));
-source.forcing_sin = double(M.forcing_xi_sin(:,1:cfg.NumSamples));
+% MATLAB matfile only supports equally spaced partial ranges. The requested
+% paired split has a gap between samples 3000 and 5001, so load only these
+% compact coefficient matrices (not the large solution_query tensor) before
+% applying the non-contiguous column selection.
+allIc = M.ic_coefficients;
+allForcingCos = M.forcing_xi_cos;
+allForcingSin = M.forcing_xi_sin;
+source.ic = double(allIc(:,cfg.SourceSampleIndices));
+source.forcing_cos = double(allForcingCos(:,cfg.SourceSampleIndices));
+source.forcing_sin = double(allForcingSin(:,cfg.SourceSampleIndices));
+source.source_indices = uint32(cfg.SourceSampleIndices(:));
 
 expectedIc = 2+2*numel(source.grf_modes);
 if size(source.ic,1)~=expectedIc
@@ -226,9 +266,10 @@ end
 if ismember('source_attempt_id',variables)
     allIds = M.source_attempt_id;
     allIds = allIds(:);
-    source.source_ids = uint32(allIds(1:cfg.NumSamples));
+    selectedIds = allIds(cfg.SourceSampleIndices);
+    source.source_ids = uint32(selectedIds(:));
 else
-    source.source_ids = uint32((1:cfg.NumSamples).');
+    source.source_ids = source.source_indices;
 end
 
 fields = {'grf_modes','grf_std','forcing_modes','forcing_std', ...
@@ -301,6 +342,19 @@ if isfile(fileName)
     check_attribute(fileName,'sensor_nx',cfg.SensorNx);
     check_attribute(fileName,'etdrk4_dt',cfg.Dt);
     check_attribute(fileName,'viscosity',cfg.Nu);
+    try
+        storedSourceIndices = double(h5read( ...
+            fileName,'/source_dataset_index'));
+    catch readError
+        error(['Existing output does not contain /source_dataset_index, ', ...
+            'so its source selection cannot be validated: %s'], ...
+            readError.message);
+    end
+    if ~isequal(storedSourceIndices(:), ...
+            double(cfg.SourceSampleIndices(:)))
+        error(['Existing output uses a different source-sample selection. ', ...
+            'Choose another OutputFile or set Overwrite=true.']);
+    end
     completed = double(h5readatt(fileName,'/','completed_samples'));
     if completed<0 || completed>n || completed~=round(completed)
         error('Invalid completed_samples attribute: %.16g.',completed);
@@ -314,6 +368,7 @@ h5create(fileName,'/query_x',[nx,1],'Datatype','double');
 h5create(fileName,'/query_t',[nt,1],'Datatype','double');
 h5create(fileName,'/sensor_x',[cfg.SensorNx,1],'Datatype','double');
 h5create(fileName,'/source_attempt_id',[n,1],'Datatype','uint32');
+h5create(fileName,'/source_dataset_index',[n,1],'Datatype','uint32');
 h5create(fileName,'/initial_condition',[nx,n], ...
     'Datatype','single','ChunkSize',[nx,chunkSamples]);
 h5create(fileName,'/forcing',[nx,n], ...
@@ -331,6 +386,7 @@ h5write(fileName,'/query_x',source.query_x);
 h5write(fileName,'/query_t',source.query_t);
 h5write(fileName,'/sensor_x',sensor_x);
 h5write(fileName,'/source_attempt_id',source.source_ids);
+h5write(fileName,'/source_dataset_index',source.source_indices);
 h5writeatt(fileName,'/','completed_samples',uint32(0));
 h5writeatt(fileName,'/','total_samples',uint32(n));
 h5writeatt(fileName,'/','train_samples',uint32(cfg.TrainSamples));
@@ -340,8 +396,23 @@ h5writeatt(fileName,'/','sensor_nx',uint32(cfg.SensorNx));
 h5writeatt(fileName,'/','etdrk4_dt',cfg.Dt);
 h5writeatt(fileName,'/','viscosity',cfg.Nu);
 h5writeatt(fileName,'/','dealias_fraction',cfg.DealiasFraction);
-h5writeatt(fileName,'/','train_index_range_zero_based','[0,3000)');
-h5writeatt(fileName,'/','test_index_range_zero_based','[3000,3100)');
+h5writeatt(fileName,'/','train_index_range_zero_based',sprintf( ...
+    '[0,%d)',cfg.TrainSamples));
+h5writeatt(fileName,'/','test_index_range_zero_based',sprintf( ...
+    '[%d,%d)',cfg.TrainSamples,cfg.NumSamples));
+h5writeatt(fileName,'/','source_selection', ...
+    ['Each HDF5 row maps to the MATLAB one-based source sample stored ', ...
+     'in /source_dataset_index.']);
+if cfg.TrainSamples>0
+    h5writeatt(fileName,'/','train_source_range_matlab',sprintf( ...
+        '[%d,%d]',cfg.SourceSampleIndices(1), ...
+        cfg.SourceSampleIndices(cfg.TrainSamples)));
+end
+if cfg.TestSamples>0
+    h5writeatt(fileName,'/','test_source_range_matlab',sprintf( ...
+        '[%d,%d]',cfg.SourceSampleIndices(cfg.TrainSamples+1), ...
+        cfg.SourceSampleIndices(end)));
+end
 h5writeatt(fileName,'/','pde', ...
     'u_t + u*u_x - nu*u_xx = f(x), periodic x in [-1,1)');
 h5writeatt(fileName,'/','reference_method', ...

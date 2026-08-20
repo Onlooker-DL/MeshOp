@@ -142,8 +142,11 @@ FEM stage can be reproduced without re-training — see `result/README.md`.
 For comparison with MeshOp's mesh-refinement-score prediction, the repository
 also includes FNO, CNO, DeepONet, and POD-DeepONet baselines that predict the
 PDE solution directly. They cover Burgers, disk convection-diffusion, and
-three-dimensional reaction-diffusion, using the first 3000 samples for
-training and samples 3001--3100 for testing.
+three-dimensional reaction-diffusion, using 3000 samples for training and 100
+held-out samples for testing. Burgers uses source samples 1--3000 for training
+and 5001--5100 for testing, matching MeshOp's held-out Burgers test set.
+CD-disk and reaction-diffusion use source samples 1--3000 for training and
+3001--3100 for testing.
 
 The baseline reuses the three original MAT files from the same GitHub Release.
 Included MATLAB programs generate the required spectral or exact reference
