@@ -13,10 +13,10 @@ conventional finite-element solve. Optional residual-based AFEM cycles can be
 continued from the operator-generated mesh when additional accuracy is needed.
 
 Four operator backbones are supported: FNO, CNO, DeepONet (including a
-multi-branch variant), and POD-DeepONet. Finite-element
-computations run in MATLAB; operator training and inference run in Python
-(PyTorch). Direct-solution versions of the four neural operators are provided
-as comparison baselines under `baseline/neural_operator_solution/`.
+multi-branch variant), and POD-DeepONet. Finite-element computations run in
+MATLAB; operator training and inference run in Python (PyTorch). Comparison
+baselines include direct neural-operator solution prediction and an adapted
+U-Net/Gmsh continuous mesh-size pipeline under `baseline/`.
 
 ## Repository structure
 
@@ -32,6 +32,7 @@ data/
 
 baseline/
   neural_operator_solution/    Direct PDE-solution operator baselines
+  neural_mesh_size_baseline/   U-Net mesh-size prediction + Gmsh + MATLAB FEM
 
 examples/
   burgers_fem_single_sample/    Minimal MATLAB example for a one-sample FEM solve
@@ -154,6 +155,23 @@ solutions locally; the generated HDF5 files are not committed. See
 [`baseline/neural_operator_solution/README.md`](baseline/neural_operator_solution/README.md)
 for data preparation, GPU launch commands, configurations, metrics, and output
 locations.
+
+### U-Net/Gmsh continuous mesh-size baseline
+
+The Burgers comparison also includes an adapted continuous mesh-size baseline.
+A parameter-matched U-Net predicts a continuous size field, Gmsh realizes a
+periodic triangular space--time mesh in normalized coordinates, and MATLAB
+solves and evaluates the same periodic P1 Burgers problem used by MeshOp. The
+targets are derived from the same fixed-12-cycle AFEM meshes as the MeshOp
+refinement targets, and online time follows the same accounting convention as
+MeshOp.
+
+This baseline reuses `data/burgers/burgers_5100.mat` from the GitHub Release;
+generated HDF5 data, checkpoints, meshes, logs, and results are intentionally
+excluded from Git. See
+[`baseline/neural_mesh_size_baseline/README.md`](baseline/neural_mesh_size_baseline/README.md)
+for data conversion, U-Net training, Gmsh export, MATLAB FEM evaluation,
+timing definitions, and plotting instructions.
 
 ### 3. FEM evaluation (MATLAB)
 

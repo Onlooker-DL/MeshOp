@@ -1,0 +1,8 @@
+data/burgers/*.mat
+data/burgers/*.h5
+results/
+logs/
+__pycache__/
+*.pyc
+.pytest_cache/
+
